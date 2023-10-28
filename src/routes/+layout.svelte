@@ -6,5 +6,7 @@
         </div>
     </nav>
 
-    <slot />
+    <div class="mt-3 mx-5">
+        <slot />
+    </div>
 </div>
