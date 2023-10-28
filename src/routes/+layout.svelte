@@ -1,12 +1,21 @@
 <div class="container-fluid">
-    <!-- As a heading -->
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand mb-0 h1" href="/">KeyDB Web Client</a>
-        </div>
-    </nav>
+    <header>
+        <nav class="navbar bg-body-tertiary">
+            <div class="">
+                <a class="navbar-brand mb-0 h1" href="/"
+                    ><b class="fs-3">KeyDB</b> Web Client</a
+                >
+            </div>
+        </nav>
+    </header>
 
-    <div class="mt-3 mx-5">
-        <slot />
-    </div>
+    <main>
+        <div class="mt-3 mx-5">
+            <slot />
+        </div>
+    </main>
+
+    <footer>
+        <div></div>
+    </footer>
 </div>
