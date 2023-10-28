@@ -1,20 +1,41 @@
 <script>
-    import { page } from '$app/stores'
-    const basePath = $page.url.pathname;
+    import { page } from "$app/stores";
+    const { slug } = $page.params;
+
+    const baseClass = "list-group-item list-group-item-action";
+    const links = [
+        {
+            path: `/connection/${slug}/info`,
+            text: "Details",
+        },
+        {
+            path: `/connection/${slug}/browser`,
+            text: "Browser",
+        },
+        {
+            path: `/connection/${slug}/cli`,
+            text: "CLI",
+        },
+        {
+            path: `/connection/${slug}/clients-list`,
+            text: "Clients list",
+        },
+    ];
 </script>
-<div class="row mt-3">
+
+<div class="row">
     <div class="col-2">
-        <div class="d-grid gap-2">
-            <a class="btn btn-primary" type="button" href="{basePath}">Details</a>
-            <a class="btn btn-primary" type="button" href="{basePath}/browser">Browser</a>
-            <a class="btn btn-primary" type="button" href="{basePath}/cli">CLI</a>
-            <a class="btn btn-primary" type="button" href="{basePath}/clients-list">Clients List</a>
+        <div class="list-group list-group-flush">
+            {#each links as link}      
+            <a href="{link.path}" class="{baseClass} {link.path === $page.url.pathname ? 'active' : ''}">
+                {link.text}
+            </a>
+            {/each}
         </div>
     </div>
-    <div class="col mx-5">
+    <div class="col">
         <div class="row h-100">
-            <slot/>
+            <slot />
         </div>
     </div>
 </div>
-
