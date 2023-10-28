@@ -11,8 +11,10 @@
             <a class="btn btn-primary" type="button" href="{basePath}/clients-list/">Clients List</a>
         </div>
     </div>
-    <div class="col">
-        <slot/>
+    <div class="col mx-5">
+        <div class="row h-100">
+            <slot/>
+        </div>
     </div>
 </div>
 
