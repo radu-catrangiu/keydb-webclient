@@ -53,7 +53,7 @@
             <input
                 type="text"
                 class="form-control"
-                value={newPattern}
+                bind:value={newPattern}
                 aria-label="Pattern"
                 on:keyup={(e) => e.key === "Enter" && updatePattern()}
             />
