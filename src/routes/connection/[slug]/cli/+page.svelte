@@ -166,7 +166,7 @@
 <style>
     .terminal-container {
         border: 1px solid #ccc;
-        height: 400px;
+        height: calc(70vh - 100px);
         overflow-y: scroll;
         padding: 10px;
         background-color: aliceblue;
