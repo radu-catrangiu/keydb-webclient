@@ -24,11 +24,11 @@ export function getFlatPromise() {
 
 /**
  * @param {String | undefined} info 
- * @returns {import("../routes/connection/[slug]/+page.server").RedisInfoEntry[]}
+ * @returns {import("../routes/connection/[slug]/info/+page.server").RedisInfoEntry[]}
  */
 export function parseRedisInfo(info) {
     /**
-     * @type {import("../routes/connection/[slug]/+page.server").RedisInfoEntry[]}
+     * @type {import("../routes/connection/[slug]/info/+page.server").RedisInfoEntry[]}
      */
     const redisInfo = [];
 

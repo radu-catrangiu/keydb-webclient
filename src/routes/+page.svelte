@@ -25,7 +25,7 @@
 <div class="my-3">
     <div class="d-grid gap-2">
         {#each data.connections as connection}
-            <a class="btn btn-primary" href="/connection/{connection.slug}/" type="button">{connection.label}</a>
+            <a class="btn btn-primary" href="/connection/{connection.slug}/info" type="button">{connection.label}</a>
         {/each}
     </div>
 </div>
