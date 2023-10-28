@@ -10,7 +10,7 @@
     Connection Details
 </h1>
 
-<div class="my-3 h-100">
+<div class="my-3 scrollable-column">
     <table class="table table-striped table-hover">
         <tbody class="fs-4">
             {#each info as { key, value }}
@@ -22,3 +22,11 @@
         </tbody>
     </table>
 </div>
+
+<style>
+    /* Set a fixed height for the second column to enable scrolling */
+    .scrollable-column {
+        max-height: 80vh; /* Adjust the height as needed */
+        overflow-y: auto;
+    }
+</style>
