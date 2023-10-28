@@ -1,8 +1,12 @@
 <script>
     import { page } from "$app/stores";
     const { slug } = $page.params;
+    
+    let path = $page.url.pathname;
+    $: {
+        path = $page.url.pathname
+    };
 
-    const baseClass = "list-group-item list-group-item-action";
     const links = [
         {
             path: `/connection/${slug}/info`,
@@ -21,21 +25,23 @@
             text: "Clients list",
         },
     ];
+    const baseClass = "list-group-item list-group-item-action";
 </script>
 
 <div class="row">
     <div class="col-2">
         <div class="list-group list-group-flush">
-            {#each links as link}      
-            <a href="{link.path}" class="{baseClass} {link.path === $page.url.pathname ? 'active' : ''}">
-                {link.text}
-            </a>
+            {#each links as link}
+                <a
+                    href={link.path}
+                    class="{baseClass} {path === link.path ? 'active' : ''}"
+                >
+                    {link.text}
+                </a>
             {/each}
         </div>
     </div>
     <div class="col">
-        <div class="row h-100">
-            <slot />
-        </div>
+        <slot />
     </div>
 </div>
