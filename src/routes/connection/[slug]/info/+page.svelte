@@ -1,8 +1,5 @@
 <script>
-    import { page } from "$app/stores";
-
     export let data;
-
     const info = data.connectionInfo || [];
 </script>
 
