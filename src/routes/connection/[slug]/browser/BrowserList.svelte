@@ -11,13 +11,17 @@
 </script>
 
 <div class="col-3">
-    {#if state.keysList.length === 0}
-        <div class="card scrollable-column">
-            <div class="card-body text-center">No keys found.</div>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="text-muted">
+                Keys
+            </h5>
         </div>
-    {:else}
-        <div class="card scrollable-column">
-            <ul class="list-group list-group-flush">
+        
+        {#if state.keysList.length === 0}
+            <div class="card-body text-center">No keys found.</div>
+        {:else}
+            <ul class="list-group list-group-flush scrollable-column">
                 {#each state.keysList as key}
                     <button
                         type="button"
@@ -29,14 +33,15 @@
                     >
                 {/each}
             </ul>
-        </div>
-    {/if}
+        {/if}
+    </div>
 
     <div class="mt-1 font-monospace">
         <small>&nbsp; Matched <b>{state.keysList.length}</b> keys.</small>
     </div>
     <small class="font-monospace"
-        >&nbsp; Scanned <i>{state.scan.current}</i> out of <i>{state.scan.maxKeys}</i> keys.</small
+        >&nbsp; Scanned <i>{state.scan.current}</i> out of
+        <i>{state.scan.maxKeys}</i> keys.</small
     >
 </div>
 
