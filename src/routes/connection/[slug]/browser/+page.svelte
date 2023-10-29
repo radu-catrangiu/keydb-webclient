@@ -2,9 +2,6 @@
     import { page } from "$app/stores";
     import { onMount } from "svelte";
 
-    /** @type {import('./$types').PageData} */
-    export let data;
-
     const dbIndex = {
         current: 0,
         new: 0,
@@ -15,10 +12,21 @@
         new: "*",
     };
 
-    const key = null;
+    /**
+     * @type {string | null}
+     */
+    let currentKey = null;
+    let cursor = "0";
 
-    onMount(() => {
+    /**
+     * @type {string[]}
+     */
+    let keysList = [];
+
+    onMount(async () => {
         const { searchParams } = $page.url;
+
+        console.log($page.url)
 
         const queryDb = searchParams.get("db");
         if (queryDb) {
@@ -32,12 +40,28 @@
         
         updateDbIndex();
         updatePattern();
+
+        await listKeys(false);
     });
+
+    /**
+     * @param {string} value
+     */
+    function updateCursor(value) {
+        cursor = value;
+    }
+
+    async function resetCursor() {
+        keysList=[];
+        updateCursor("0");
+        listKeys(true)
+    }
 
     function updateUrl() {
         $page.url.searchParams.set("db", String(dbIndex.current));
         $page.url.searchParams.set("pattern", pattern.current);
         history.replaceState(history.state, "", $page.url);
+        resetCursor();
     }
 
     function updateDbIndex() {
@@ -52,9 +76,40 @@
         pattern.current = pattern.new;
         updateUrl();
     }
+
+    /**
+     * @param {boolean} replace
+     */
+    async function listKeys(replace) {
+        const u = new URL($page.url);
+        u.pathname = u.pathname + "/list"
+        u.searchParams.set("cursor", cursor);
+        const url = u.pathname + u.search;
+
+        const response = await fetch(url, {
+            method: "GET",
+        });
+
+        const result = await response.json();
+        console.log(result);
+        
+        updateCursor(result.newCursor);
+        if (replace) {
+            keysList = [...result.list];
+        } else {
+            keysList = [...keysList, ...result.list];
+        }
+    }
+
+    /**
+     * @param {string} value
+     */
+    async function getKey(value) {
+        currentKey = value;
+    }
 </script>
 
-<h1>This is the Browser page for {data.slug}</h1>
+<h1>Browser</h1>
 
 <div class="row my-3">
     <div class="col-3">
@@ -102,9 +157,12 @@
     <div class="col-3">
         <div class="card">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
+                {#each keysList as key}
+                    <button 
+                        type="button"
+                        class="list-group-item list-group-item-action {key === currentKey ? 'active' : ''}"
+                        on:click={() => getKey(key)}>{key}</button>
+                {/each}
             </ul>
         </div>
     </div>

@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { TYPE } from '$lib/cli'
-import { getParams } from '$lib/server/helper';
+import { getBody, getSlug } from '$lib/server/paramsHelper';
 import { runCommand } from '$lib/server/commandRunner';
 
 /**
@@ -40,10 +40,8 @@ function parseResonse(selectResult, commandResult) {
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 export async function POST(event) {
-    const {
-        slug,
-        body,
-    } = await getParams(event);
+    const slug = await getSlug(event);
+    const body = await getBody(event);
 
     const {
         db = 0,
