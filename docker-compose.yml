@@ -1,0 +1,22 @@
+version: "3"
+services:
+
+  keydb:
+    image: eqalpha/keydb
+    container_name: keydb-server
+    ports:
+      - 6380:6379
+    restart: unless-stopped
+
+  keydb-webclient:
+    build:
+      context: .
+    restart: always
+    environment:
+      - ORIGIN=http://localhost:3000
+    ports: 
+      - 3000:3000
+
+volumes:
+  data:
+    driver: local
