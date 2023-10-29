@@ -81,3 +81,25 @@ export async function GET(event) {
         value,
     });
 }
+
+/** @type {import('@sveltejs/kit').RequestHandler} */
+export async function PUT(event) {
+    const slug = await getSlug(event);
+    const query = await getQuery(event);
+
+    const { action } = query;
+
+    if (action === "EXPIRE") {
+        const { db, key, ttl } = query;
+        const command = `EXPIRE ${key} ${ttl}`;
+        const getCommandResponse = await runCommand(slug, db, command);
+        const result = handleMultiResponse(getCommandResponse);
+
+        return json({
+            action,
+            result,
+        });
+    }
+
+    return json({});
+}
