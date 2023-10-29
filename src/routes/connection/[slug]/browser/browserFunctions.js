@@ -55,19 +55,22 @@ export function getStateFromUrl(url) {
 
 /**
  * @param {URL} currentUrl 
+ * @param {number} db
  * @param {string} pattern 
  * @param {string} cursor 
  * @param {number} count 
  * @returns 
  */
-export async function listKeysFromAPI(currentUrl, pattern, cursor, count) {
-    const u = new URL(currentUrl);
+export async function listKeysFromAPI(currentUrl, db, pattern, cursor, count) {
+    const pathname = currentUrl.pathname + "/list";
 
-    u.pathname = u.pathname + "/list";
-    u.searchParams.set("pattern", pattern);
-    u.searchParams.set("cursor", cursor);
-    u.searchParams.set("count", String(count));
-    const url = u.pathname + u.search;
+    const query = new URLSearchParams();
+    query.set("db", String(db));
+    query.set("pattern", pattern);
+    query.set("cursor", cursor);
+    query.set("count", String(count));
+
+    const url = pathname + '?' + query.toString();
 
     const response = await fetch(url, {
         method: "GET",
@@ -85,17 +88,49 @@ export async function listKeysFromAPI(currentUrl, pattern, cursor, count) {
  * @returns 
  */
 export async function getKeyData(currentUrl, db, key) {
-    const u = new URL(currentUrl);
+    const pathname = currentUrl.pathname + "/key";
 
-    u.pathname = u.pathname + "/key";
+    const query = new URLSearchParams();
+    query.set("db", String(db));
+    query.set("key", key);
 
-    u.searchParams.set("db", String(db));
-    u.searchParams.set("key", key);
+    const url = pathname + '?' + query.toString();
 
-    const url = u.pathname + u.search;
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+        });
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.log(error)
+    }
+
+    return null;
+}
+
+/**
+ * 
+ * @param {URL} currentUrl 
+ * @param {number} db 
+ * @param {string} key 
+ * @param {number} ttl 
+ * @returns 
+ */
+export async function updateKeyTTL(currentUrl, db, key, ttl) {
+    const pathname = currentUrl.pathname + "/key";
+
+    const query = new URLSearchParams();
+    query.set("action", "EXPIRE")
+    query.set("db", String(db));
+    query.set("key", key);
+    query.set("ttl", String(ttl));
+
+    const url = pathname + '?' + query.toString();
 
     const response = await fetch(url, {
-        method: "GET",
+        method: "PUT",
     });
 
     const result = await response.json();
