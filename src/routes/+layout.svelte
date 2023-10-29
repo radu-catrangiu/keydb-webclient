@@ -1,21 +1,19 @@
-<div class="container-fluid">
-    <header>
-        <nav class="navbar bg-body-tertiary">
-            <div class="">
-                <a class="navbar-brand mb-0 h1" href="/"
-                    ><b class="fs-3">KeyDB</b> Web Client</a
-                >
-            </div>
-        </nav>
-    </header>
+<div>
+    <nav class="navbar bg-body-secondary">
+        <div class="mx-3">
+            <a class="navbar-brand" href="/">
+                <b class="fs-2">KeyDB</b> Web Client
+            </a>
+        </div>
+    </nav>
 
-    <main>
-        <div class="mt-3 mx-5">
+    <main class="container-fluid">
+        <div class="mx-5">
             <slot />
         </div>
     </main>
 
-    <footer>
-        <div></div>
+    <footer class="footer text-center w-100 py-3 position-absolute bottom-0 start-50 translate-middle-x">
+        <div>Made with &hearts; SvelteKit</div>
     </footer>
 </div>
