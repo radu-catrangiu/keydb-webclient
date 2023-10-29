@@ -4,7 +4,7 @@
     import BrowserTopBar from "./BrowserTopBar.svelte";
     import BrowserList from "./BrowserList.svelte"
     import BrowserKeyContent from "./BrowserKeyContent.svelte";
-    import { listKeysFromAPI, updateUrl } from "./browserState";
+    import { getKeyData, listKeysFromAPI, updateUrl } from "./browserState";
 
     /**
      * @type {import("./browserState").BrowserState}
@@ -25,6 +25,7 @@
             current: 0,
         },
         selectedKey: null,
+        selectedKeyData: null,
         keysList: [],
     };
 
@@ -72,7 +73,13 @@
      * @param {string} value
      */
     async function selectKey(value) {
-        state.selectedKey = value;
+        const url = $page.url;
+        const db = state.dbIndex.current;
+        const key = value;
+        const response = await getKeyData(url, db, key);
+
+        state.selectedKeyData = response;
+        state.selectedKey = key;
     }
 </script>
 
@@ -94,5 +101,7 @@
     />
 
     <BrowserKeyContent
-    selectedKey={state.selectedKey}/>
+        selectedKey={state.selectedKey}
+        selectedKeyData={state.selectedKeyData}
+    />
 </div>

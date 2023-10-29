@@ -15,8 +15,10 @@
  * @property {number} scan.current
  * @property {number} scan.maxKeys
  * 
- * @property {string | null} selectedKey
  * @property {string[]} keysList
+ * 
+ * @property {string | null} selectedKey
+ * @property {import("./key/+server").KeyDataResponse | null} selectedKeyData
  */
 
 /**
@@ -55,6 +57,33 @@ export async function listKeysFromAPI(currentUrl, pattern, cursor, count) {
     });
 
     const result = await response.json();
+
+    return result;
+}
+
+/**
+ * @param {URL} currentUrl 
+ * @param {number} db
+ * @param {string} key 
+ * @returns 
+ */
+export async function getKeyData(currentUrl, db, key) {
+    const u = new URL(currentUrl);
+
+    u.pathname = u.pathname + "/key";
+
+    u.searchParams.set("db", String(db));
+    u.searchParams.set("key", key);
+
+    const url = u.pathname + u.search;
+
+    const response = await fetch(url, {
+        method: "GET",
+    });
+
+    const result = await response.json();
+
+    console.log(result)
 
     return result;
 }

@@ -41,7 +41,7 @@
             {/each}
         </div>
     </div>
-    <div class="col">
+    <div class="col-10">
         <slot />
     </div>
 </div>
