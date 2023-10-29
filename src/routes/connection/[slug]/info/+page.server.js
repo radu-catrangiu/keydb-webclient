@@ -16,7 +16,7 @@ export async function load({ params }) {
     try {
         connectionDetails = await getConnection(slug);
     } catch (error) {
-        return fail(404, {
+        throw fail(404, {
             error,
         });
     }
@@ -25,7 +25,7 @@ export async function load({ params }) {
     try {
         info = await connectionDetails.redisClient?.info();
     } catch (error) {
-        return fail(500, {
+        throw fail(500, {
             error,
         });
     }
