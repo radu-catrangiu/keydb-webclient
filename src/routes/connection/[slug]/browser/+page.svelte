@@ -1,4 +1,7 @@
 <script>
+    import { page } from "$app/stores";
+    import { onMount } from "svelte";
+
     /** @type {import('./$types').PageData} */
     export let data;
 
@@ -7,25 +10,53 @@
         new: 0,
     };
 
-    let newPattern = "*";
-    let currentPattern = "*";
+    const pattern = {
+        current: "*",
+        new: "*",
+    };
+
+    const key = null;
+
+    onMount(() => {
+        const { searchParams } = $page.url;
+
+        const queryDb = searchParams.get("db");
+        if (queryDb) {
+            dbIndex.new = Number(queryDb);
+        }
+        
+        const queryPattern = searchParams.get("pattern");
+        if (queryPattern) {
+            pattern.new = queryPattern;
+        }
+        
+        updateDbIndex();
+        updatePattern();
+    });
+
+    function updateUrl() {
+        $page.url.searchParams.set("db", String(dbIndex.current));
+        $page.url.searchParams.set("pattern", pattern.current);
+        history.replaceState(history.state, "", $page.url);
+    }
 
     function updateDbIndex() {
         if (dbIndex.new < 0) {
             dbIndex.new = 0;
         }
         dbIndex.current = dbIndex.new;
+        updateUrl();
     }
 
     function updatePattern() {
-        currentPattern = newPattern;
+        pattern.current = pattern.new;
+        updateUrl();
     }
 </script>
 
 <h1>This is the Browser page for {data.slug}</h1>
 
 <div class="row my-3">
-
     <div class="col-3">
         <div class="input-group">
             <span class="input-group-text">Database Index</span>
@@ -53,19 +84,18 @@
             <input
                 type="text"
                 class="form-control"
-                bind:value={newPattern}
+                bind:value={pattern.new}
                 aria-label="Pattern"
                 on:keyup={(e) => e.key === "Enter" && updatePattern()}
             />
             <button
                 class="btn btn-secondary"
                 type="button"
-                disabled={currentPattern === newPattern}
+                disabled={pattern.current === pattern.new}
                 on:click={updatePattern}>Search</button
             >
         </div>
     </div>
-
 </div>
 
 <div class="row">
