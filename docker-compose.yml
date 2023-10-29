@@ -8,6 +8,14 @@ services:
       - 6380:6379
     restart: unless-stopped
 
+  keydb-webclient-dockerhub:
+    image: raducat/keydb-webclient:latest
+    restart: always
+    environment:
+      - ORIGIN=http://localhost:3001
+    ports: 
+      - 3001:3000
+
   keydb-webclient:
     build:
       context: .
