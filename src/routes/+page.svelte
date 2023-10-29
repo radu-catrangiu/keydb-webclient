@@ -1,5 +1,5 @@
 <script>
-    import NewConnectionModal from '$lib/NewConnectionModal.svelte'
+    import NewConnectionModal from '$lib/modals/NewConnectionModal.svelte'
     /**
      * @type {import("./+page.server").ConnectionsPageResponse}
      */
