@@ -5,7 +5,7 @@ import { error, json } from '@sveltejs/kit';
 /**
  * @typedef KeyDataResponse
  * @property {string} type
- * @property {string | object} value
+ * @property {any} value
  * @property {number} ttl
  * @property {number} size
  */
@@ -26,7 +26,7 @@ function computeCommand(type, key) {
         case "set": 
             return `smembers ${key}`
         case "zset":
-            return `zrange ${key} 0 -1`
+            return `zrange ${key} 0 -1 WITHSCORES`
     }
 
     return null

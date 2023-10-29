@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import BrowserTopBar from "./BrowserTopBar.svelte";
     import BrowserList from "./BrowserList.svelte"
-    import BrowserKeyContent from "./BrowserKeyContent.svelte";
+    import BrowserKeyContainer from "./BrowserKeyContainer.svelte";
     import { getKeyData, listKeysFromAPI, updateUrl } from "./browserState";
 
     /**
@@ -32,7 +32,6 @@
     onMount(async () => {
         updateUrl($page.url, state.selectedKey, state.dbIndex.current, state.pattern.current);
         await listKeys(true);
-        console.log(state.keysList);
     });
 
     function updateDbIndex() {
@@ -100,8 +99,8 @@
         state={state}
     />
 
-    <BrowserKeyContent
-        selectedKey={state.selectedKey}
-        selectedKeyData={state.selectedKeyData}
+    <BrowserKeyContainer
+        key={state.selectedKey}
+        data={state.selectedKeyData}
     />
 </div>

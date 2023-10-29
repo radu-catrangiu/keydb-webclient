@@ -83,7 +83,5 @@ export async function getKeyData(currentUrl, db, key) {
 
     const result = await response.json();
 
-    console.log(result)
-
     return result;
 }
