@@ -39,10 +39,7 @@
     <div class="mt-1 font-monospace">
         <small>&nbsp; Matched <b>{state.keysList.length}</b> keys.</small>
     </div>
-    <small class="font-monospace"
-        >&nbsp; Scanned <i>{state.scan.current}</i> out of
-        <i>{state.scan.maxKeys}</i> keys.</small
-    >
+    <!-- <small class="font-monospace">&nbsp; Scanned <i>{state.scan.current}</i> out of<i>{state.scan.maxKeys}</i> keys.</small> -->
 </div>
 
 <style>
