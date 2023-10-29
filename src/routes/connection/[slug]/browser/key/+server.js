@@ -16,7 +16,7 @@ import { error, json } from '@sveltejs/kit';
  * @param {string} key 
  * @returns {string | null}
  */
-function computeCommand(type, key) {
+function computeGetCommand(type, key) {
     switch (type) {
         case "string":
             return `get ${key}`;
@@ -54,7 +54,7 @@ export async function GET(event) {
         });
     }
 
-    const command = computeCommand(keyType, key);
+    const command = computeGetCommand(keyType, key);
     if (!command) {
         throw error(400, {
             message: "[Error] Invalid key type: " + keyType,
