@@ -30,10 +30,27 @@
 export function updateUrl(url, selectedKey, currentDbIndex, currentPattern) {
     if (selectedKey) {
         url.searchParams.set("key", selectedKey);
+    } else {
+        url.searchParams.delete("key");
     }
     url.searchParams.set("db", String(currentDbIndex));
     url.searchParams.set("pattern", currentPattern);
     history.replaceState(history.state, "", url);
+}
+
+/**
+ * @param {URL} url 
+ */
+export function getStateFromUrl(url) {
+    let db = Number(url.searchParams.get("db"));
+    let pattern = url.searchParams.get("pattern");
+    let key = url.searchParams.get("key");
+
+    return {
+        db,
+        pattern,
+        key,
+    };
 }
 
 /**

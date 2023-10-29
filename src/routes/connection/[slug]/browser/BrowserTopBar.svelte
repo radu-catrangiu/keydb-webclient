@@ -20,12 +20,12 @@
     export let currentPattern;
 
     /**
-     * @type {() => void}
+     * @type {(arg0: number) => void}
      */
     export let updateDbIndex;
 
     /**
-     * @type {() => void}
+     * @type {(arg0: string) => void}
      */
     export let updatePattern;
 </script>
@@ -41,13 +41,13 @@
                 max="1000"
                 bind:value={newDbIndex}
                 aria-label="Database Index"
-                on:keyup={(e) => e.key === "Enter" && updateDbIndex()}
+                on:keyup={(e) => e.key === "Enter" && updateDbIndex(newDbIndex)}
             />
             <button
                 class="btn btn-secondary"
                 type="button"
                 disabled={currentDbIndex === newDbIndex}
-                on:click={updateDbIndex}>Select</button
+                on:click={() => updateDbIndex(newDbIndex)}>Select</button
             >
         </div>
     </div>
@@ -60,13 +60,13 @@
                 class="form-control"
                 bind:value={newPattern}
                 aria-label="Pattern"
-                on:keyup={(e) => e.key === "Enter" && updatePattern()}
+                on:keyup={(e) => e.key === "Enter" && updatePattern(newPattern)}
             />
             <button
                 class="btn btn-secondary"
                 type="button"
                 disabled={currentPattern === newPattern}
-                on:click={updatePattern}>Search</button
+                on:click={() => updatePattern(newPattern)}>Search</button
             >
         </div>
     </div>

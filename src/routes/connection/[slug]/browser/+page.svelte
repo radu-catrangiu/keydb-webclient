@@ -4,10 +4,10 @@
     import BrowserTopBar from "./BrowserTopBar.svelte";
     import BrowserList from "./BrowserList.svelte"
     import BrowserKeyContainer from "./BrowserKeyContainer.svelte";
-    import { getKeyData, listKeysFromAPI, updateUrl } from "./browserState";
+    import { getKeyData, getStateFromUrl, listKeysFromAPI, updateUrl } from "./browserFunctions";
 
     /**
-     * @type {import("./browserState").BrowserState}
+     * @type {import("./browserFunctions").BrowserState}
      */
     const state = {
         dbIndex: {
@@ -30,20 +30,69 @@
     };
 
     onMount(async () => {
-        updateUrl($page.url, state.selectedKey, state.dbIndex.current, state.pattern.current);
-        await listKeys(true);
+        const {
+            db,
+            key,
+            pattern,
+        } = getStateFromUrl($page.url);
+
+        if (db) {
+            updateDbIndex(db, false);
+        }
+
+        if (pattern) {
+            updatePattern(pattern, false);
+        }
+
+        if (key) {
+            await selectKey(key, false);
+        }
+
+        await refreshPage(false);
     });
 
-    function updateDbIndex() {
+    /**
+     * @param {boolean} clearSelection
+     */
+    async function refreshPage(clearSelection) {
+        if (clearSelection) {
+            state.selectedKey = null,
+            state.selectedKeyData = null;
+        }
+        updateUrl($page.url, state.selectedKey, state.dbIndex.current, state.pattern.current);
+        await listKeys(true);
+    }
+
+    /**
+     * @param {number} value
+     * @param {boolean} refreshUrl
+     */
+    function updateDbIndex(value, refreshUrl = true) {
+        state.dbIndex.new = value;
         if (state.dbIndex.new < 0) {
             state.dbIndex.new = 0;
         }
 
+
         state.dbIndex.current = state.dbIndex.new;
+
+        updatePattern("*", false);
+
+        if (refreshUrl) {
+            refreshPage(true);
+        }
     }
 
-    function updatePattern() {
-        state.pattern.current = state.pattern.new;
+    /**
+     * @param {string} value
+     * @param {boolean} [refreshUrl]
+     */
+    function updatePattern(value, refreshUrl = true) {
+        state.pattern.current = value;
+        state.pattern.new = value;
+        if (refreshUrl) {
+            refreshPage(true);
+        }
     }
 
     /**
@@ -70,15 +119,20 @@
 
     /**
      * @param {string} value
+     * @param {boolean} [refreshUrl]
      */
-    async function selectKey(value) {
+    async function selectKey(value, refreshUrl = true) {
         const url = $page.url;
         const db = state.dbIndex.current;
         const key = value;
         const response = await getKeyData(url, db, key);
-
+        
         state.selectedKeyData = response;
         state.selectedKey = key;
+        console.log("clicked", state.selectedKey, state.selectedKeyData)
+        if (refreshUrl) {
+            updateUrl($page.url, state.selectedKey, state.dbIndex.current, state.pattern.current);
+        }
     }
 </script>
 

@@ -1,11 +1,11 @@
 <script>
     /**
-     * @type {import("./browserState").BrowserState}
+     * @type {import("./browserFunctions").BrowserState}
      */
     export let state;
 
     /**
-     * @type {(arg0: string) => void}
+     * @type {(arg0: string, arg1: boolean) => void}
      */
     export let selectKey;
 </script>
@@ -29,7 +29,7 @@
                         state.selectedKey
                             ? 'active'
                             : ''}"
-                        on:click={() => selectKey(key)}>{key}</button
+                        on:click={() => selectKey(key, true)}>{key}</button
                     >
                 {/each}
             </ul>
