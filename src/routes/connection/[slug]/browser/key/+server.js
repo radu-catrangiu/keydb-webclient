@@ -4,6 +4,7 @@ import { error, json } from '@sveltejs/kit';
 
 /**
  * @typedef KeyDataResponse
+ * @property {boolean} exists
  * @property {string} type
  * @property {any} value
  * @property {number} ttl
@@ -43,6 +44,16 @@ export async function GET(event) {
     const typeCommandResponse = await runCommand(slug, db, `TYPE ${key}`);
     const keyType = handleMultiResponse(typeCommandResponse);
 
+    if (keyType === "none") {
+        return json({
+            exists: false,
+            type: keyType,
+            ttl: -2,
+            size: 0,
+            value: null,
+        });
+    }
+
     const command = computeCommand(keyType, key);
     if (!command) {
         throw error(400, {
@@ -63,6 +74,7 @@ export async function GET(event) {
     const size = handleMultiResponse(sizeCommandResponse);
 
     return json({
+        exists: true,
         type: keyType,
         ttl,
         size,
