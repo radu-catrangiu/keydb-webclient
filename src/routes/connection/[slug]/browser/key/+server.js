@@ -89,9 +89,9 @@ export async function PUT(event) {
 
     const { action } = query;
 
-    if (action === "EXPIRE") {
+    if (action === "UPDATE_TTL") {
         const { db, key, ttl } = query;
-        const command = `EXPIRE ${key} ${ttl}`;
+        const command = ttl < 0 ? `PERSIST ${key}` : `EXPIRE ${key} ${ttl}`;
         const getCommandResponse = await runCommand(slug, db, command);
         const result = handleMultiResponse(getCommandResponse);
 

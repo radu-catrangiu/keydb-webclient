@@ -14,10 +14,13 @@
     /** @type {number} */
     export let ttl;
 
-    const modalClose = () => {
+    /**
+     * @param {number} [ttl]
+     */
+    const modalClose = (ttl) => {
         open = false;
         if (onClosed) {
-            onClosed();
+            onClosed(ttl);
         }
     };
 
@@ -25,7 +28,16 @@
 
     const updateTTL = async () => {
         await updateKeyTTL($page.url, Number(db), key, ttl)
-        modalClose();
+        modalClose(ttl);
+    }
+
+    /**
+     * @param {KeyboardEvent} event
+     */
+     function submitUpdate(event) {
+        if (event.key === "Enter") {
+            updateTTL();
+        }
     }
 </script>
 
@@ -49,7 +61,7 @@
                         class="btn-close"
                         data-bs-dismiss="modal"
                         aria-label="Close"
-                        on:click={modalClose}
+                        on:click={() => modalClose()}
                     />
                 </div>
                 <div class="modal-body">
@@ -65,8 +77,13 @@
                             aria-describedby="expirationHelp"
                             required
                             name="expiration"
+                            on:keyup={submitUpdate}
                             bind:value={ttl}
                         />
+                        <div id="expirationHelp" class="form-text">
+                            Use 0 to delete the key.
+                            Use a negative value to remove the Expiry.
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -74,7 +91,7 @@
                         type="button"
                         class="btn btn-secondary"
                         data-dismiss="modal"
-                        on:click={modalClose}>Close</button
+                        on:click={() => modalClose()}>Close</button
                     >
                     <button
                         form="connectionForm"

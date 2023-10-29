@@ -1,8 +1,9 @@
 <script>
+    import SetTtlModal from "$lib/modals/SetTTLModal.svelte";
     import { formatBytes } from "$lib/utils";
 
     /**
-     * @type {string | null}
+     * @type {string}
      */
     export let key;
 
@@ -16,6 +17,14 @@
      */
     export let data;
     
+    let setTTLModalOpen = false;
+    let ttlModalTrigger = () => setTTLModalOpen = true;
+    let onTTLModalClosed = ( /** @type {number | undefined}*/ newTTL) => {
+        setTTLModalOpen = false;
+        if (newTTL) {
+            data.ttl = newTTL;
+        }
+    };
 </script>
 
 <div class="col-9">
@@ -33,7 +42,7 @@
                     <span>|</span>
                     <small>{formatBytes(data.size)}</small>
                     <span>|</span>
-                    <small role="button" class="text-decoration-underline">
+                    <small role="button" class="text-decoration-underline" tabindex="0" on:click={ttlModalTrigger} on:keyup={ttlModalTrigger}>
                         {data.ttl < 0 ? "No TTL" : `TTL: ${data.ttl}`}
                     </small>
                 </div>
@@ -63,6 +72,8 @@
         </div>
     </div>
 </div>
+
+<SetTtlModal {key} ttl={data.ttl} onClosed={onTTLModalClosed} open={setTTLModalOpen} />
 
 <style>
     /* Set a fixed height for the second column to enable scrolling */

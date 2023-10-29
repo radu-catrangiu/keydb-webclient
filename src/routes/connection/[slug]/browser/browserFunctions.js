@@ -122,7 +122,7 @@ export async function updateKeyTTL(currentUrl, db, key, ttl) {
     const pathname = currentUrl.pathname + "/key";
 
     const query = new URLSearchParams();
-    query.set("action", "EXPIRE")
+    query.set("action", "UPDATE_TTL")
     query.set("db", String(db));
     query.set("key", key);
     query.set("ttl", String(ttl));
