@@ -100,11 +100,12 @@
      */
     async function listKeys(replace) {
         const url = $page.url;
+        const db = state.dbIndex.current;
         const pattern = state.pattern.current;
         const cursor = state.scan.cursor;
         const count = state.scan.batch;
         
-        const result = await listKeysFromAPI(url, pattern, cursor, count);
+        const result = await listKeysFromAPI(url, db, pattern, cursor, count);
 
         state.scan.cursor = result.newCursor;
         
@@ -125,11 +126,17 @@
         const url = $page.url;
         const db = state.dbIndex.current;
         const key = value;
-        const response = await getKeyData(url, db, key);
+
+        let response;
+        try {
+            response = await getKeyData(url, db, key);
+        } catch (error) {
+            await refreshPage(false);
+        }
         
         state.selectedKeyData = response;
         state.selectedKey = key;
-        console.log("clicked", state.selectedKey, state.selectedKeyData)
+
         if (refreshUrl) {
             updateUrl($page.url, state.selectedKey, state.dbIndex.current, state.pattern.current);
         }
