@@ -1,7 +1,11 @@
 import { getFlatPromise } from '../utils'
 import { randomUUID } from 'crypto'
 import { Redis } from 'ioredis'
+import path from 'path';
+import fs from 'fs/promises'
+import { fileURLToPath } from 'url';
 
+let dbVersion = 0;
 const db = new Map();
 
 /**
@@ -123,13 +127,15 @@ async function getRedisConnection(details) {
 
 /**
  * 
- * @param {ConnectionDetails} details 
+ * @param {ConnectionDetails} details
+ * @param {boolean} [skipBackup]
+ * @param {string} [existingSlug]
  * @throws {Error}
  */
-export async function createConnection(details) {
+export async function createConnection(details, skipBackup = false, existingSlug) {
     validateDetails(details);
 
-    const slug = randomUUID();
+    const slug = existingSlug ?? randomUUID();
     const {
         label,
         host,
@@ -153,5 +159,83 @@ export async function createConnection(details) {
     newConnection.redisClient = await getRedisConnection(newConnection);
 
     db.set(slug, newConnection)
+    if (!skipBackup) {
+        dbVersion++;
+        storeBackup();
+    }
 }
 
+async function getSerializable() {
+    /**
+     * @type {ConnectionDetails[]}
+     */
+    const entries = [...db.values()];
+    
+    const connectionsDetails = entries.map(({ slug, host, port, label, username, password }) => ({ slug, host, port, label, username, password }));
+
+    return {
+        dbVersion,
+        connectionsDetails,
+    };
+}
+
+const backupLocation = "/.temp/connections.backup";
+async function storeBackup() {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.join(__dirname, backupLocation);
+    const dirPath = path.dirname(filePath);
+    const serializable = await getSerializable();
+    const data = JSON.stringify(serializable);
+
+    try {
+        await fs.mkdir(dirPath, { recursive: true });
+        await fs.writeFile(filePath, data);
+    } catch (error) {
+        console.error(`Error writing file "${filePath}":`, error);
+    }
+
+}
+
+async function getBackup() {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const filePath = path.join(__dirname, backupLocation);
+    try {
+        await fs.access(filePath, fs.constants.F_OK);
+        const fileContent = await fs.readFile(filePath, 'utf8');
+        return fileContent;
+    } catch (error) {
+        return null;
+    }
+}
+
+
+export async function restoreConnections() {
+    const backupStr = await getBackup();
+    
+    if (!backupStr) {
+        return;
+    }
+
+    let backup;
+    try {
+        backup = JSON.parse(backupStr);
+    } catch (error) {
+        console.error("Error parsing the backup file:", error);
+        return;
+    }
+
+    const { connectionsDetails } = backup;
+    if (!connectionsDetails?.length) {
+        return;
+    }
+
+    for (const connectionDetails of connectionsDetails) {
+        try {
+            await createConnection(connectionDetails, false, connectionDetails.slug);
+        } catch (error) {
+            console.error(`Error initializing connection ${connectionDetails.slug}:`, error);
+        }
+    }
+}
