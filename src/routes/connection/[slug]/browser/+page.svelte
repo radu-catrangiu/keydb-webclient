@@ -199,11 +199,20 @@
     />
 </div>
 
-
+{#if modalMode === "UPDATE" && typeof state?.selectedKey === "string"}
 <CreateEditKeyModal
     key={state.selectedKey}
-    data={state.selectedKeyData}
+    value={state.selectedKeyData?.value}
     mode={modalMode}
     open={modalOpen}
     onClosed={onModalClosed}
     />
+{/if}
+
+{#if modalMode === "CREATE"}
+<CreateEditKeyModal
+    mode={modalMode}
+    open={modalOpen}
+    onClosed={onModalClosed}
+    />
+{/if}

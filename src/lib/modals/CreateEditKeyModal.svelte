@@ -10,20 +10,13 @@
 
     export let mode = "CREATE";
 
-    /** @type {string | null} */
-    export let key;
+    export let type = "string";
 
-    /** @type {import("../../routes/connection/[slug]/browser/key/+server").KeyDataResponse | null} */
-    export let data;
+    /** @type {string} */
+    export let key = "";
 
-    let newKeyType = mode === "CREATE" ? "string" : String(data?.type);
-    let newKeyName = mode === "CREATE" ? "" : String(key);
-    let newKeyValue = mode === "CREATE" ? "" : String(data?.value);
-
-    $: {
-        console.log(mode, data?.type, key, data?.value)
-        console.log(mode, newKeyType, newKeyName, newKeyValue)
-    }
+    /** @type {*} */
+    export let value = "";
 
     const modalClose = () => {
         open = false;
@@ -31,14 +24,17 @@
             onClosed("NONE");
         }
     };
-
-    let db = $page.url.searchParams.get("db");
-
+    
     const action = async () => {
-        await upsertKey($page.url, Number(db), newKeyType, newKeyName, newKeyValue);
-        modalClose();
+        let db = $page.url.searchParams.get("db");
+        await upsertKey($page.url, Number(db), type, key, value);
+        open = false;
         if (onClosed) {
-            onClosed(mode, newKeyName, newKeyValue);
+            onClosed(mode, key, value);
+        }
+        if (mode === "CREATE") {
+            key = "";
+            value = "";
         }
     }
 </script>
@@ -78,7 +74,7 @@
                         </label>
                         {#if mode === "CREATE"}
                             <select 
-                                bind:value={newKeyType} 
+                                bind:value={type} 
                                 disabled
                                 class="form-select" aria-label="Default select example">
                                 <option selected value="string">String</option>
@@ -89,7 +85,7 @@
                             </select>
                         {:else}
                             <select 
-                                bind:value={newKeyType} 
+                                bind:value={type} 
                                 disabled
                                 class="form-select" aria-label="Default select example">
                                 <option selected value="string">String</option>
@@ -108,7 +104,7 @@
                         </label>
                         {#if mode === "CREATE"}
                         <input
-                            bind:value={newKeyName}
+                            bind:value={key}
                             type="text"
                             class="form-control"
                             id="keyInput"
@@ -137,7 +133,7 @@
                             Value
                         </label>
                         <textarea
-                            bind:value={newKeyValue}
+                            bind:value={value}
                             class="form-control"
                             placeholder="bar"
                             id="valueInput"
