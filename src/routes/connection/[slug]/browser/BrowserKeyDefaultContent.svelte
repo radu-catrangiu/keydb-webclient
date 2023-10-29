@@ -8,6 +8,11 @@
     /** @type {import("./key/+server").KeyDataResponse} */
     export let data;
 
+    /**
+     * @type {Function}
+    */
+    export let openUpdateModal;
+
     let setTTLModalOpen = false;
     let ttlModalTrigger = () => setTTLModalOpen = true;
     let onTTLModalClosed = ( /** @type {number | undefined}*/ newTTL) => {
@@ -42,7 +47,7 @@
         </div>
 
         <div class="card-body scrollable-column">
-            <p class="card-text">{data.value}</p>
+            <p class="card-text" role="button" on:click={openUpdateModal("UPDATE")}>{data.value}</p>
         </div>
     </div>
 </div>

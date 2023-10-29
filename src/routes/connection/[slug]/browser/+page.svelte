@@ -5,11 +5,12 @@
     import BrowserList from "./BrowserList.svelte"
     import BrowserKeyContainer from "./BrowserKeyContainer.svelte";
     import { getKeyData, getStateFromUrl, listKeysFromAPI, updateUrl } from "./browserFunctions";
+    import CreateEditKeyModal from '$lib/modals/CreateEditKeyModal.svelte'
 
     /**
      * @type {import("./browserFunctions").BrowserState}
      */
-    const state = {
+    let state = {
         dbIndex: {
             new: 0,
             current: 0,
@@ -28,6 +29,36 @@
         selectedKeyData: null,
         keysList: [],
     };
+
+    let modalOpen = false;
+    let modalMode = "CREATE";
+    /**
+     * @param {"CREATE"|"UPDATE"} mode
+     */
+    function openModal(mode) {
+        modalOpen = true;
+        modalMode = mode;
+    }
+
+    /**
+     * @param {"CREATE"|"UPDATE"} mode
+     * @param {string} newKey
+     * @param {string} value
+     */
+    function onModalClosed(mode, newKey, value) {
+        modalOpen = false;
+
+        if (mode === "CREATE") {
+            state.keysList = [newKey, ...state.keysList];
+            selectKey(newKey, true)
+        }
+
+        if (mode === "UPDATE") {
+            if (state.selectedKeyData) {
+                state.selectedKeyData.value = value;
+            }
+        }
+    }
 
     onMount(async () => {
         const {
@@ -152,6 +183,7 @@
     newPattern={state.pattern.new}
     updateDbIndex={updateDbIndex}
     updatePattern={updatePattern}
+    openCreateModal={openModal}
 />
 
 <div class="row">
@@ -163,5 +195,15 @@
     <BrowserKeyContainer
         key={state.selectedKey}
         data={state.selectedKeyData}
+        openUpdateModal={openModal}
     />
 </div>
+
+
+<CreateEditKeyModal
+    key={state.selectedKey}
+    data={state.selectedKeyData}
+    mode={modalMode}
+    open={modalOpen}
+    onClosed={onModalClosed}
+    />

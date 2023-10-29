@@ -16,11 +16,16 @@
      * @type {import("./key/+server").KeyDataResponse | null}
      */
     export let data;
+
+    /**
+     * @type {Function}
+    */
+    export let openUpdateModal;
 </script>
 
 {#if key !== null && data?.exists}
     {#if data.type === "string" && typeof data.value === "string" && isJsonString(data.value)}
-        <BrowserKeyJsonContent {key} {data} />
+        <BrowserKeyJsonContent {openUpdateModal} {key} {data} />
     {:else if data.type === "hash"}
         <BrowserKeyHashContent {key} {data} />
     {:else if data.type === "set"}
@@ -30,14 +35,16 @@
     {:else if data.type === "list"}
         <BrowserKeyListContent {key} {data} />
     {:else}
-        <BrowserKeyDefaultContent {key} {data} />
+        <BrowserKeyDefaultContent {openUpdateModal} {key} {data} />
     {/if}
+{:else if key === null}
+    <div class="col-9"></div>
 {:else}
-<div class="col-9">
-    <div class="text-center mt-5">
-        <span class="fs-3 text-danger">
-            The <b>{key}</b> key does not exist.
-        </span>
+    <div class="col-9">
+        <div class="text-center mt-5">
+            <span class="fs-3 text-danger">
+                The <b>{key}</b> key does not exist.
+            </span>
+        </div>
     </div>
-</div>
 {/if}

@@ -11,6 +11,11 @@
      * @type {import("./key/+server").KeyDataResponse}
      */
     export let data;
+    
+    /**
+     * @type {Function}
+    */
+    export let openUpdateModal;
 
     let setTTLModalOpen = false;
     let ttlModalTrigger = () => setTTLModalOpen = true;

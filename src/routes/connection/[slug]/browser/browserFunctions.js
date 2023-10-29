@@ -137,3 +137,29 @@ export async function updateKeyTTL(currentUrl, db, key, ttl) {
 
     return result;
 }
+
+/**
+ * @param {URL} currentUrl
+ * @param {number} db
+ * @param {string} type
+ * @param {string} key
+ * @param {string} value
+ */
+export async function upsertKey(currentUrl, db, type, key, value) {
+    const pathname = currentUrl.pathname + `/key/${type}`;
+
+    const query = new URLSearchParams();
+    query.set("db", String(db));
+    query.set("key", key);
+    query.set("value", value);
+
+    const url = pathname + '?' + query.toString();
+
+    const response = await fetch(url, {
+        method: "POST",
+    });
+
+    const result = await response.json();
+
+    return result;
+}

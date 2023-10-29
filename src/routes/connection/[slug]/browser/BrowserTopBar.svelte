@@ -28,6 +28,11 @@
      * @type {(arg0: string) => void}
      */
     export let updatePattern;
+
+    /**
+     * @type {Function}
+     */
+    export let openCreateModal;
 </script>
 
 <div class="row my-3">
@@ -72,6 +77,6 @@
     </div>
 
     <div class="col-auto">
-        <button class="btn btn-primary">Insert Key</button>
+        <button class="btn btn-primary" on:click={openCreateModal("CREATE")}>Insert Key</button>
     </div>
 </div>
