@@ -36,3 +36,11 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## Publishing
+
+### Dockerhub
+
+```bash
+docker buildx build --no-cache --platform=linux/amd64,linux/arm64/v8,linux/arm/v7 -t raducat/keydb-webclient:{version} -t raducat/keydb-webclient:latest --push .
+```
