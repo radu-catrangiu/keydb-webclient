@@ -61,7 +61,7 @@
 <style>
     /* Set a fixed height for the second column to enable scrolling */
     .scrollable-column {
-        max-height: alc(60vh - 80px); /* Adjust the height as needed */
+        max-height: calc(60vh - 80px); /* Adjust the height as needed */
         overflow-y: auto;
     }
 
